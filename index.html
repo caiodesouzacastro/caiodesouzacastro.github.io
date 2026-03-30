@@ -9,28 +9,29 @@
 <style>
 :root {
   --ink: #1a1a18;
-  --muted: #6b6b65;
-  --faint: #eeece6;
-  --accent: #2a4a8a;
-  --bg: #faf9f6;
+  --muted: #5a5a5a;
+  --faint: #e8eef6;
+  --accent: #003087;
+  --accent2: #0055b3;
+  --bg: #f8f9fb;
   --paper: #ffffff;
-  --rule: 1px solid #dddbd3;
+  --rule: 1px solid #ccd6e8;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.75;color:var(--ink);background:var(--bg)}
 
-nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:var(--rule);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:54px}
-.nav-name{font-family:'DM Mono',monospace;font-size:12px;font-weight:300;letter-spacing:.06em;color:var(--ink);text-decoration:none}
+nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:var(--rule);border-top:3px solid var(--accent);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:54px}
+.nav-name{font-family:'DM Mono',monospace;font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--accent);text-decoration:none}
 .nav-links{display:flex;gap:2rem;list-style:none}
 .nav-links a{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
-.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover{color:var(--accent)}
 
 .container{max-width:820px;margin:0 auto;padding:0 2.5rem}
 section{padding:5rem 0;border-bottom:var(--rule)}
 section:last-of-type{border-bottom:none}
 
-.section-label{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2.5rem;display:block}
+.section-label{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:2.5rem;display:block}
 
 /* HERO */
 #about{padding-top:6rem;padding-bottom:5.5rem}
@@ -42,8 +43,8 @@ h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:400;line-height:1.12;letter-sp
 .hero-links{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:2rem}
 .btn{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;letter-spacing:.05em;padding:.45rem 1rem;border:var(--rule);border-radius:2px;text-decoration:none;color:var(--ink);transition:background .15s;display:inline-flex;align-items:center;gap:.35rem}
 .btn:hover{background:var(--faint)}
-.btn-solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.btn-solid:hover{background:#333;border-color:#333;color:var(--bg)}
+.btn-solid{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-solid:hover{background:var(--accent2);border-color:var(--accent2);color:#fff}
 .avatar-box{width:148px;height:148px;border-radius:50%;background:var(--faint);border:var(--rule);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;color:var(--muted);text-align:center;flex-shrink:0}
 
 /* RESEARCH */
@@ -56,7 +57,7 @@ h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:400;line-height:1.12;letter-sp
 .paper-title{font-size:1.05rem;font-weight:500;line-height:1.4;margin-bottom:.3rem}
 .paper-authors{font-size:.9rem;color:var(--muted);font-style:italic;margin-bottom:.3rem}
 .paper-meta{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--muted);margin-bottom:.5rem;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
-.pill{display:inline-block;padding:1px 7px;border:var(--rule);border-radius:20px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;color:var(--muted)}
+.pill{display:inline-block;padding:1px 7px;border:1px solid var(--accent);border-radius:20px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;color:var(--accent);opacity:.65}
 .paper-link{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--accent);text-decoration:none}
 .paper-link:hover{text-decoration:underline}
 
@@ -65,7 +66,7 @@ h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:400;line-height:1.12;letter-sp
 .course:last-child{border-bottom:none}
 .course-name{font-size:1rem;font-weight:500}
 .course-sub{font-size:.875rem;color:var(--muted);font-style:italic}
-.course-year{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;white-space:nowrap}
+.course-year{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.04em;white-space:nowrap;opacity:.7}
 
 .mba-block{margin-top:2.5rem;padding-top:2.5rem;border-top:var(--rule)}
 
@@ -75,7 +76,7 @@ h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:400;line-height:1.12;letter-sp
 
 /* CONTACT */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
-.contact-item .label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+.contact-item .label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.3rem;opacity:.8}
 .contact-item a,.contact-item p{font-size:1rem;color:var(--ink);text-decoration:none}
 .contact-item a:hover{color:var(--accent)}
 
@@ -304,7 +305,7 @@ footer p{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;col
     <div class="course">
       <div>
         <div class="course-name">MBA in ESG for Public Servants</div>
-        <div class="course-sub">FGV — free MBA program</div>
+        <div class="course-sub">FGV Cidades</div>
       </div>
       <div class="course-year">current</div>
     </div>
