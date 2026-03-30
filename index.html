@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caio de Souza Castro — Economist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a18;
+  --muted: #6b6b65;
+  --faint: #eeece6;
+  --accent: #2a4a8a;
+  --bg: #faf9f6;
+  --paper: #ffffff;
+  --rule: 1px solid #dddbd3;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.75;color:var(--ink);background:var(--bg)}
+
+nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:var(--rule);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:54px}
+.nav-name{font-family:'DM Mono',monospace;font-size:12px;font-weight:300;letter-spacing:.06em;color:var(--ink);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+
+.container{max-width:820px;margin:0 auto;padding:0 2.5rem}
+section{padding:5rem 0;border-bottom:var(--rule)}
+section:last-of-type{border-bottom:none}
+
+.section-label{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2.5rem;display:block}
+
+/* HERO */
+#about{padding-top:6rem;padding-bottom:5.5rem}
+.hero-grid{display:grid;grid-template-columns:1fr 148px;gap:4rem;align-items:start}
+h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:400;line-height:1.12;letter-spacing:-.015em;margin-bottom:1.6rem}
+.hero-body p{font-size:1.1rem;color:var(--muted);max-width:540px;margin-bottom:.85rem}
+.hero-body p strong{color:var(--ink);font-weight:500}
+.hero-body p:first-child{color:var(--ink)}
+.hero-links{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:2rem}
+.btn{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;letter-spacing:.05em;padding:.45rem 1rem;border:var(--rule);border-radius:2px;text-decoration:none;color:var(--ink);transition:background .15s;display:inline-flex;align-items:center;gap:.35rem}
+.btn:hover{background:var(--faint)}
+.btn-solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn-solid:hover{background:#333;border-color:#333;color:var(--bg)}
+.avatar-box{width:148px;height:148px;border-radius:50%;background:var(--faint);border:var(--rule);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;color:var(--muted);text-align:center;flex-shrink:0}
+
+/* RESEARCH */
+.filter-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:2.2rem}
+.ftag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:.3rem .8rem;border:var(--rule);border-radius:2px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.ftag:hover,.ftag.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.paper{padding:1.6rem 0;border-bottom:var(--rule);transition:opacity .2s}
+.paper:last-child{border-bottom:none}
+.paper.hidden{display:none}
+.paper-title{font-size:1.05rem;font-weight:500;line-height:1.4;margin-bottom:.3rem}
+.paper-authors{font-size:.9rem;color:var(--muted);font-style:italic;margin-bottom:.3rem}
+.paper-meta{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--muted);margin-bottom:.5rem;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.pill{display:inline-block;padding:1px 7px;border:var(--rule);border-radius:20px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;color:var(--muted)}
+.paper-link{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--accent);text-decoration:none}
+.paper-link:hover{text-decoration:underline}
+
+/* TEACHING */
+.course{display:grid;grid-template-columns:1fr auto;align-items:baseline;padding:.9rem 0;border-bottom:var(--rule);gap:1rem}
+.course:last-child{border-bottom:none}
+.course-name{font-size:1rem;font-weight:500}
+.course-sub{font-size:.875rem;color:var(--muted);font-style:italic}
+.course-year{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;white-space:nowrap}
+
+.mba-block{margin-top:2.5rem;padding-top:2.5rem;border-top:var(--rule)}
+
+/* CV */
+.cv-card{background:var(--paper);border:var(--rule);border-radius:4px;padding:2rem 2.25rem;display:flex;align-items:center;justify-content:space-between;gap:2rem}
+.cv-card p{font-size:1rem;color:var(--muted);max-width:460px}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.contact-item .label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+.contact-item a,.contact-item p{font-size:1rem;color:var(--ink);text-decoration:none}
+.contact-item a:hover{color:var(--accent)}
+
+footer{padding:2.5rem 0;border-top:var(--rule)}
+footer .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+footer p{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--muted)}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .avatar-box{display:none}
+  nav{padding:0 1.25rem}
+  .container{padding:0 1.25rem}
+  .cv-card{flex-direction:column}
+  .contact-grid{grid-template-columns:1fr}
+  .nav-links{gap:1.2rem}
+}
+
+.fade-up{opacity:0;transform:translateY(18px);animation:fu .55s ease forwards}
+@keyframes fu{to{opacity:1;transform:translateY(0)}}
+.d1{animation-delay:.08s}.d2{animation-delay:.18s}.d3{animation-delay:.28s}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-name" href="#about">Caio de Souza Castro</a>
+  <ul class="nav-links">
+    <li><a href="#research">Research</a></li>
+    <li><a href="#teaching">Teaching</a></li>
+    <li><a href="#cv">CV</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ABOUT -->
+<div class="container">
+<section id="about">
+  <div class="hero-grid">
+    <div class="hero-body">
+      <span class="section-label fade-up d1">Economist · FGV EESP · São Paulo</span>
+      <h1 class="fade-up d2">Caio de<br>Souza Castro</h1>
+      <div class="fade-up d3">
+        <p>I am a professor at the <strong>São Paulo School of Economics (FGV EESP)</strong> and a researcher at <strong>FGV CLEAR</strong> and <strong>FGV Cidades</strong>.</p>
+        <p>My research is in applied economics, with an emphasis on causal inference and impact evaluation of public policies. I work on projects spanning education, health, labor markets, international trade, and environmental economics, drawing primarily on Brazilian administrative data.</p>
+        <p>I hold a Ph.D. and M.Sc. in Economics from FGV EESP and a B.A. in Economics from the University of São Paulo (USP).</p>
+        <div class="hero-links">
+          <a class="btn btn-solid" href="CV_Caio_Castro_EN.pdf" target="_blank">↓ CV (English)</a>
+          <a class="btn" href="CV_Caio_Castro_PT.pdf" target="_blank">↓ CV (Português)</a>
+          <a class="btn" href="http://lattes.cnpq.br/8962248681395757" target="_blank">Lattes ↗</a>
+          <a class="btn" href="mailto:caio.castro@fgv.br">caio.castro@fgv.br</a>
+          <a class="btn" href="mailto:caiodesouzacastro28@gmail.com">Gmail ↗</a>
+        </div>
+      </div>
+    </div>
+    <img src="foto.jpg" alt="Caio de Souza Castro" class="avatar-box" style="object-fit:cover;">
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <span class="section-label">Working Papers</span>
+
+  <div class="filter-row">
+    <button class="ftag on" onclick="filter('all',this)">All</button>
+    <button class="ftag" onclick="filter('education',this)">Education</button>
+    <button class="ftag" onclick="filter('health',this)">Health</button>
+    <button class="ftag" onclick="filter('environment',this)">Environment</button>
+    <button class="ftag" onclick="filter('labor',this)">Labor &amp; Trade</button>
+    <button class="ftag" onclick="filter('other',this)">Other</button>
+  </div>
+
+  <div id="papers">
+
+    <div class="paper" data-cat="education">
+      <div class="paper-title">Early Childhood Education and Long-Run Academic Outcomes: Evidence from São Paulo's Daycare Waitlist</div>
+      <div class="paper-authors">Caio de Souza Castro</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Education</span></div>
+    </div>
+
+    <div class="paper" data-cat="education">
+      <div class="paper-title">Effects of Technical Education and Professional Qualification: Experimental Evidence from Novotec Integrado</div>
+      <div class="paper-authors">Caio de Souza Castro &amp; André Portela Souza</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Education · RCT</span></div>
+    </div>
+
+    <div class="paper" data-cat="education">
+      <div class="paper-title">Cross-Sector Collaborations in Education: Balancing Immediate Access and Long-Term Goals for Vulnerable Children</div>
+      <div class="paper-authors">Ciro Biderman, Caio de Souza Castro, Fernando Deodato Domingos &amp; Alexandre Schneider</div>
+      <div class="paper-meta"><span class="pill">Working paper · 2025</span><span class="pill">Education</span></div>
+      <a class="paper-link" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5063146" target="_blank">SSRN ↗</a>
+    </div>
+
+    <div class="paper" data-cat="health">
+      <div class="paper-title">Income Shocks and Mental Health: Evidence from Oil Royalties in Brazil</div>
+      <div class="paper-authors">Caio de Souza Castro, Marcos Nakaguma &amp; Daniel da Mata</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Health</span></div>
+    </div>
+
+    <div class="paper" data-cat="health">
+      <div class="paper-title">Teleinterconsultation as a Strategy to Reduce Geographic Inequity of Specialist Access: Evidence from an Impact Evaluation in Brazil</div>
+      <div class="paper-authors">Leon Labre, Caio de Souza Castro, Lucas Reis Correia, Lycia Lima, Carlos Pedrotti, Alei Santos, André Portela Souza &amp; Michel Szklo</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Health</span></div>
+    </div>
+
+    <div class="paper" data-cat="health">
+      <div class="paper-title">Darkness and Its Consequences: Causal Effects of a Large-Scale Electricity Blackout on Hospital Admissions</div>
+      <div class="paper-authors">Caio de Souza Castro, Hugo Villarinho Carvalho &amp; Marcos Paulo Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Health</span></div>
+    </div>
+
+    <div class="paper" data-cat="health">
+      <div class="paper-title">Domestic Workers, Maternity Rights, and Infant Health: Evidence from Brazil's 2015 Labor Reform</div>
+      <div class="paper-authors">Caio de Souza Castro, Hugo Villarinho Carvalho &amp; Marcos Paulo Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper · 2026</span><span class="pill">Health · Labor</span></div>
+    </div>
+
+    <div class="paper" data-cat="health">
+      <div class="paper-title">River Primary Care and Health Outcomes in the Brazilian Amazon</div>
+      <div class="paper-authors">Caio de Souza Castro, Hugo Villarinho Carvalho &amp; Marcos Paulo Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper · 2026</span><span class="pill">Health</span></div>
+    </div>
+
+    <div class="paper" data-cat="environment">
+      <div class="paper-title">Long-Run Labor Market Scarring from a Technological Disaster: Evidence from the Fundão Dam Collapse in Brazil</div>
+      <div class="paper-authors">André Portela Souza, Amanda Arabage, Bernardo Ostrovski &amp; Caio de Souza Castro</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Environment · Labor</span></div>
+    </div>
+
+    <div class="paper" data-cat="environment">
+      <div class="paper-title">Radioactive Legacies: Health Impacts of Uranium Mining on Nearby Communities in Brazil</div>
+      <div class="paper-authors">Caio de Souza Castro, Hugo Villarinho Carvalho &amp; Marcos Paulo Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Environment · Health</span></div>
+    </div>
+
+    <div class="paper" data-cat="environment">
+      <div class="paper-title">Population Without Prosperity: Quasi-Experimental Evidence on the Local Economic Impacts of Uranium Mining in Brazil</div>
+      <div class="paper-authors">Caio de Souza Castro, Hugo Villarinho Carvalho &amp; Marcos Paulo Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Environment</span></div>
+    </div>
+
+    <div class="paper" data-cat="environment">
+      <div class="paper-title">Environmental Disasters and Agricultural Livelihoods: Evidence from the 2003 Cataguases Paper Mill Spill</div>
+      <div class="paper-authors">Hugo Villarinho Carvalho, Caio de Souza Castro &amp; Marcos Paulo Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Environment</span></div>
+    </div>
+
+    <div class="paper" data-cat="labor">
+      <div class="paper-title">The Agricultural Footprint of the US–China Trade War: Evidence from Brazilian Microregions</div>
+      <div class="paper-authors">Caio de Souza Castro, Alexandre Rabelo, Pedro Molina Ogeda &amp; Lucas Mariano</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Trade</span></div>
+      <a class="paper-link" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6441940" target="_blank">SSRN ↗</a>
+    </div>
+
+    <div class="paper" data-cat="labor">
+      <div class="paper-title">The Impacts of Mercosur on the Brazilian Labor Market</div>
+      <div class="paper-authors">Alexandre Rabelo, Caio de Souza Castro &amp; Pedro Molina Ogeda</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Trade · Labor</span></div>
+    </div>
+
+    <div class="paper" data-cat="other">
+      <div class="paper-title">Does Street Lighting Deter Crime? High-Resolution Evidence from São Paulo's LED Modernization PPP</div>
+      <div class="paper-authors">Hugo Carvalho, Caio de Souza Castro &amp; Marcos Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper · 2026</span><span class="pill">Crime</span></div>
+    </div>
+
+    <div class="paper" data-cat="other">
+      <div class="paper-title">Good News and Bad News: The Effects of Consuming Professional News Outlets During the 2022 Brazilian Elections</div>
+      <div class="paper-authors">Caio de Souza Castro &amp; João F. Pugliese</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Political economy</span></div>
+    </div>
+
+    <div class="paper" data-cat="other">
+      <div class="paper-title">New Stadiums, More Fans? Evidence from Brazilian Professional Football</div>
+      <div class="paper-authors">Alexandre Rabelo, Caio de Souza Castro &amp; Pedro Molina Ogeda</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Sports economics</span></div>
+    </div>
+
+    <div class="paper" data-cat="other">
+      <div class="paper-title">Crowds and Crime: Evidence from a Large Urban Cultural Event</div>
+      <div class="paper-authors">Caio de Souza Castro, Hugo Villarinho Carvalho &amp; Marcos Paulo Correia</div>
+      <div class="paper-meta"><span class="pill">Working paper</span><span class="pill">Crime · Urban</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TEACHING -->
+<section id="teaching">
+  <span class="section-label">Teaching — FGV EESP (Undergraduate)</span>
+
+  <div class="course">
+    <div><div class="course-name">Linear Algebra</div></div>
+    <div class="course-year">2020 – present</div>
+  </div>
+  <div class="course">
+    <div><div class="course-name">Mathematics</div></div>
+    <div class="course-year">2020 – 2022</div>
+  </div>
+  <div class="course">
+    <div><div class="course-name">Mathematics II</div></div>
+    <div class="course-year">2022 – present</div>
+  </div>
+  <div class="course">
+    <div><div class="course-name">Introduction to Economics</div></div>
+    <div class="course-year">2022 – present</div>
+  </div>
+  <div class="course">
+    <div><div class="course-name">Econometrics I</div></div>
+    <div class="course-year">2023 – present</div>
+  </div>
+  <div class="course">
+    <div><div class="course-name">Econometrics III</div></div>
+    <div class="course-year">2023 – present</div>
+  </div>
+  <div class="course">
+    <div><div class="course-name">Projects I</div></div>
+    <div class="course-year">2020 – 2021</div>
+  </div>
+  <div class="course">
+    <div><div class="course-name">Programming and Problem Solving</div></div>
+    <div class="course-year">2021</div>
+  </div>
+
+  <div class="mba-block">
+    <span class="section-label">MBA Programs — FGV</span>
+    <div class="course">
+      <div>
+        <div class="course-name">MBA in ESG for Public Servants</div>
+        <div class="course-sub">FGV — free MBA program</div>
+      </div>
+      <div class="course-year">current</div>
+    </div>
+    <div class="course">
+      <div>
+        <div class="course-name">MBA in PPPs and Sustainable Concessions</div>
+        <div class="course-sub">FGV Cidades</div>
+      </div>
+      <div class="course-year">current</div>
+    </div>
+  </div>
+</section>
+
+<!-- CV -->
+<section id="cv">
+  <span class="section-label">Curriculum Vitae</span>
+  <div class="cv-card">
+    <div>
+      <h2 style="margin-bottom:.5rem">Full CV</h2>
+      <p>Academic background, research experience, teaching, and technical skills. Last updated March 2026.</p>
+    </div>
+    <a class="btn btn-solid" href="CV_Caio_Castro_EN.pdf" target="_blank">↓ CV (English)</a>
+    <a class="btn" href="CV_Caio_Castro_PT.pdf" target="_blank" style="margin-top:.5rem">↓ CV (Português)</a>
+  </div>
+
+  <div style="margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem">
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Education</div>
+      <p style="font-size:.95rem">Ph.D. Economics<br><span style="color:var(--muted);font-style:italic">FGV EESP, 2020–2024</span></p>
+      <p style="font-size:.95rem;margin-top:.5rem">M.Sc. Economics<br><span style="color:var(--muted);font-style:italic">FGV EESP, 2018–2020</span></p>
+      <p style="font-size:.95rem;margin-top:.5rem">B.A. Economics<br><span style="color:var(--muted);font-style:italic">USP, 2013–2016</span></p>
+    </div>
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Affiliations</div>
+      <p style="font-size:.95rem">FGV EESP<br>FGV CLEAR<br>FGV Cidades</p>
+    </div>
+    <div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Methods &amp; Software</div>
+      <p style="font-size:.95rem">Causal inference<br>RCT design<br>R · Stata · LaTeX</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <span class="section-label">Contact</span>
+  <div class="contact-grid">
+    <div class="contact-item">
+      <div class="label">Email</div>
+      <a href="mailto:caio.castro@fgv.br">caio.castro@fgv.br</a>
+    </div>
+    <div class="contact-item">
+      <div class="label">Institution</div>
+      <p>São Paulo School of Economics — FGV EESP<br>Rua Itapeva, 474 · São Paulo, SP</p>
+    </div>
+    <div class="contact-item">
+      <div class="label">Profiles</div>
+      <a href="http://lattes.cnpq.br/8962248681395757" target="_blank">Lattes ↗</a>
+    </div>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<footer>
+  <div class="container">
+    <p>Caio de Souza Castro · FGV EESP · São Paulo</p>
+    <p>Last updated March 2026</p>
+  </div>
+</footer>
+
+<script>
+function filter(cat, btn) {
+  document.querySelectorAll('.ftag').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.paper').forEach(p => {
+    if (cat === 'all' || p.dataset.cat === cat) {
+      p.classList.remove('hidden');
+    } else {
+      p.classList.add('hidden');
+    }
+  });
+}
+</script>
+</body>
+</html>
