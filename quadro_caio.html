@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Quadro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f1e7;
+    --paper-2:#efe8d9;
+    --card:#fffdf8;
+    --ink:#2c2620;
+    --ink-soft:#6f665a;
+    --line:#e2d9c7;
+    --accent:#bf502f;
+    --accent-soft:#e6c5b8;
+    --shadow:0 1px 2px rgba(44,38,32,.06), 0 8px 24px rgba(44,38,32,.07);
+    /* tags */
+    --t-none:transparent;
+    --t-red:#d9534f;
+    --t-amber:#d99a2b;
+    --t-green:#5a9367;
+    --t-blue:#4a7ab0;
+    --t-purple:#8a6bb0;
+    --t-gray:#9a9286;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Hanken Grotesk',sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 20% 0%, rgba(191,80,47,.04), transparent 60%),
+                     radial-gradient(circle at 90% 10%, rgba(74,122,176,.04), transparent 55%);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    padding:32px 24px 120px;
+  }
+  header.top{
+    max-width:1400px;margin:0 auto 28px;
+    display:flex;align-items:flex-end;justify-content:space-between;
+    flex-wrap:wrap;gap:16px;
+    border-bottom:1px solid var(--line);padding-bottom:20px;
+  }
+  .title-wrap h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;font-size:38px;letter-spacing:-.5px;line-height:1;
+  }
+  .title-wrap .sub{color:var(--ink-soft);font-size:14px;margin-top:6px}
+  .title-wrap .sub b{color:var(--accent);font-weight:600}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{
+    font-family:inherit;font-size:13px;font-weight:600;
+    border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:9px 14px;border-radius:10px;cursor:pointer;
+    transition:.15s ease;display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{background:#a8431f;color:#fff;transform:translateY(-1px)}
+  .btn svg{width:15px;height:15px}
+
+  .board{
+    max-width:1400px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+    gap:20px;align-items:start;
+  }
+
+  .block{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);overflow:hidden;
+    transition:opacity .2s, box-shadow .2s;
+  }
+  .block.dragover-block{box-shadow:0 0 0 2px var(--accent)}
+  .block-head{
+    display:flex;align-items:center;gap:10px;
+    padding:16px 16px 12px;border-bottom:1px solid var(--line);
+  }
+  .block-accent{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+  .block-title{
+    font-family:'Fraunces',serif;font-weight:600;font-size:20px;flex:1;
+    outline:none;border-radius:6px;padding:2px 4px;letter-spacing:-.2px;
+  }
+  .block-title:focus{background:var(--paper-2)}
+  .count{
+    font-size:12px;font-weight:600;color:var(--ink-soft);
+    background:var(--paper-2);border-radius:20px;padding:3px 9px;flex:none;
+  }
+  .block-menu{position:relative}
+  .icon-btn{
+    background:none;border:none;cursor:pointer;color:var(--ink-soft);
+    padding:4px;border-radius:6px;display:flex;line-height:0;
+  }
+  .icon-btn:hover{background:var(--paper-2);color:var(--ink)}
+  .icon-btn svg{width:16px;height:16px}
+
+  .tasks{list-style:none;padding:6px 10px}
+  .tasks.empty-hint{padding:18px 14px;color:var(--ink-soft);font-size:13px;font-style:italic}
+
+  .task{
+    display:flex;align-items:flex-start;gap:9px;
+    padding:8px 8px;border-radius:10px;position:relative;
+    border-left:4px solid var(--t-none);
+    transition:background .12s;
+    cursor:grab;
+  }
+  .task:hover{background:var(--paper-2)}
+  .task.dragging{opacity:.4}
+  .task.done .task-text{text-decoration:line-through;color:var(--ink-soft)}
+
+  .check{
+    appearance:none;-webkit-appearance:none;
+    width:18px;height:18px;border:1.8px solid var(--ink-soft);border-radius:6px;
+    cursor:pointer;flex:none;margin-top:2px;position:relative;transition:.15s;
+  }
+  .check:hover{border-color:var(--accent)}
+  .check:checked{background:var(--accent);border-color:var(--accent)}
+  .check:checked::after{
+    content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  .task-text{
+    flex:1;font-size:14.5px;line-height:1.45;outline:none;
+    border-radius:6px;padding:1px 3px;word-break:break-word;min-height:20px;
+  }
+  .task-text:focus{background:#fff;box-shadow:0 0 0 1.5px var(--accent-soft)}
+  .task-text:empty::before{content:"Escreva aqui…";color:var(--ink-soft);font-style:italic}
+
+  .task-actions{display:flex;align-items:center;gap:2px;opacity:0;transition:.15s;flex:none;margin-top:1px}
+  .task:hover .task-actions{opacity:1}
+
+  /* color dots */
+  .colors{position:relative}
+  .color-trigger{
+    width:16px;height:16px;border-radius:50%;border:1px solid var(--line);
+    cursor:pointer;background:var(--current,transparent);
+  }
+  .color-trigger.is-none{background:repeating-linear-gradient(45deg,#fff,#fff 3px,var(--line) 3px,var(--line) 4px)}
+  .palette{
+    position:absolute;right:0;top:22px;z-index:30;display:none;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:8px;box-shadow:var(--shadow);gap:6px;
+    grid-template-columns:repeat(4,1fr);width:128px;
+  }
+  .palette.open{display:grid}
+  .swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:1px solid rgba(0,0,0,.08)}
+  .swatch.none{background:repeating-linear-gradient(45deg,#fff,#fff 3px,var(--line) 3px,var(--line) 4px)}
+  .swatch:hover{transform:scale(1.12)}
+
+  .del-task{color:var(--ink-soft)}
+  .del-task:hover{color:var(--t-red);background:#f7e3e2}
+
+  .add-row{display:flex;gap:6px;padding:8px 14px 16px}
+  .add-input{
+    flex:1;font-family:inherit;font-size:14px;border:1px solid var(--line);
+    background:var(--paper);border-radius:9px;padding:8px 11px;outline:none;color:var(--ink);
+  }
+  .add-input:focus{border-color:var(--accent);background:#fff}
+  .add-btn{
+    border:1px dashed var(--line);background:transparent;color:var(--ink-soft);
+    border-radius:9px;width:38px;font-size:20px;cursor:pointer;line-height:1;flex:none;
+  }
+  .add-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  .add-block-card{
+    border:2px dashed var(--line);border-radius:16px;background:transparent;
+    color:var(--ink-soft);font-family:'Fraunces',serif;font-size:17px;font-weight:500;
+    cursor:pointer;min-height:90px;display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:.15s;
+  }
+  .add-block-card:hover{border-color:var(--accent);color:var(--accent);background:var(--card)}
+
+  /* block color menu */
+  .blockmenu-pop{
+    position:absolute;right:0;top:28px;z-index:40;display:none;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);padding:6px;min-width:170px;
+  }
+  .blockmenu-pop.open{display:block}
+  .blockmenu-pop button{
+    width:100%;text-align:left;background:none;border:none;font-family:inherit;
+    font-size:13px;color:var(--ink);padding:8px 10px;border-radius:8px;cursor:pointer;
+    display:flex;align-items:center;gap:8px;
+  }
+  .blockmenu-pop button:hover{background:var(--paper-2)}
+  .blockmenu-pop .danger:hover{background:#f7e3e2;color:var(--t-red)}
+  .accent-dots{display:flex;gap:6px;padding:8px 10px 6px;flex-wrap:wrap}
+  .accent-dots .swatch{width:18px;height:18px}
+  .menu-sep{height:1px;background:var(--line);margin:4px 0}
+
+  footer{max-width:1400px;margin:40px auto 0;text-align:center;color:var(--ink-soft);font-size:12px}
+  .saved-flash{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:30px;
+    font-size:13px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:100;
+  }
+  .saved-flash.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* sync modal */
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(44,38,32,.45);z-index:200;
+    display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;
+  }
+  .modal-bg.open{display:flex}
+  .modal{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:0 12px 48px rgba(44,38,32,.25);max-width:520px;width:100%;
+    padding:26px 26px 22px;
+  }
+  .modal h2{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin-bottom:6px}
+  .modal p.lead{color:var(--ink-soft);font-size:13.5px;line-height:1.5;margin-bottom:18px}
+  .modal label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:14px 0 5px}
+  .modal input[type=text],.modal input[type=password]{
+    width:100%;font-family:inherit;font-size:14px;border:1px solid var(--line);
+    background:var(--paper);border-radius:9px;padding:10px 12px;outline:none;color:var(--ink);
+  }
+  .modal input:focus{border-color:var(--accent);background:#fff}
+  .modal .hint{font-size:12px;color:var(--ink-soft);margin-top:5px;line-height:1.45}
+  .modal .hint a{color:var(--accent)}
+  .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+  .modal-actions .spacer{flex:1}
+  .steps{background:var(--paper-2);border-radius:12px;padding:14px 16px;font-size:12.5px;line-height:1.55;color:var(--ink)}
+  .steps ol{margin:6px 0 0 18px}
+  .steps code{background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:11.5px}
+  .modal .status-line{font-size:13px;font-weight:600;margin-top:14px}
+  .warn{font-size:11.5px;color:var(--ink-soft);margin-top:16px;border-top:1px solid var(--line);padding-top:12px;line-height:1.5}
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="title-wrap">
+      <h1>Meu Quadro</h1>
+      <div class="sub"><span id="syncPill" style="font-weight:600">Não sincronizado</span> · <span id="stats"></span></div>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="hideDone">Ocultar concluídas</button>
+      <button class="btn" id="clearDone">Limpar concluídas</button>
+      <button class="btn" id="exportBtn" title="Baixar um backup .json">Backup</button>
+      <button class="btn" id="importBtn" title="Restaurar de um backup">Restaurar</button>
+      <button class="btn primary" id="syncBtn" title="Sincronizar entre computadores via GitHub">☁ Sincronizar</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+  </header>
+
+  <div class="board" id="board"></div>
+
+  <footer>Clique em qualquer texto para editar · arraste para reordenar · tudo fica guardado automaticamente</footer>
+  <div class="saved-flash" id="flash">salvo</div>
+
+  <div class="modal-bg" id="syncModal">
+    <div class="modal">
+      <h2>Sincronizar entre computadores</h2>
+      <p class="lead">O quadro é guardado num <b>Gist secreto</b> da sua conta GitHub. Configure uma vez em cada computador e ele abre sempre atualizado.</p>
+
+      <div class="steps">
+        <b>Como pegar o token (1ª vez só):</b>
+        <ol>
+          <li>Abra <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">github.com/settings/tokens/new</a></li>
+          <li>Em <i>Note</i> escreva algo como <code>meu-quadro</code>, escolha uma expiração (ou <i>No expiration</i>).</li>
+          <li>Marque <b>apenas</b> o escopo <code>gist</code>.</li>
+          <li>Clique <i>Generate token</i> e copie o código (começa com <code>ghp_</code>).</li>
+        </ol>
+      </div>
+
+      <label for="tokenInput">Token do GitHub (escopo <code>gist</code>)</label>
+      <input type="password" id="tokenInput" placeholder="ghp_..." autocomplete="off" spellcheck="false">
+
+      <label for="gistInput">ID do Gist <span style="font-weight:400">(opcional)</span></label>
+      <input type="text" id="gistInput" placeholder="deixe em branco para criar um novo" autocomplete="off" spellcheck="false">
+      <div class="hint">No 1º computador, deixe em branco — um Gist novo será criado e o ID aparecerá aqui. Nos outros computadores, cole esse mesmo ID (ou só o token, que ele acha o Gist sozinho).</div>
+
+      <div class="status-line"><span id="modalStatus" style="color:var(--ink-soft)">Não conectado.</span></div>
+
+      <div class="modal-actions">
+        <button class="btn" id="pullBtn" title="Baixar a versão mais recente do GitHub">↓ Puxar agora</button>
+        <button class="btn" id="disconnectBtn">Desconectar</button>
+        <span class="spacer"></span>
+        <button class="btn" id="closeSync">Fechar</button>
+        <button class="btn primary" id="connectBtn">Conectar</button>
+      </div>
+
+      <div class="warn">O token fica salvo só neste navegador (no <code>localStorage</code> deste computador), nunca dentro do arquivo. Trate-o como uma senha; se um PC não for seu, use <i>Desconectar</i> ao terminar. Você pode revogar o token a qualquer momento em GitHub → Settings → Developer settings.</div>
+    </div>
+  </div>
+
+<script>
+const KEY = 'meu_quadro_v1';
+const ACCENTS = ['#bf502f','#4a7ab0','#5a9367','#d99a2b','#8a6bb0','#9a9286'];
+const TAGS = {none:'transparent',red:'#d9534f',amber:'#d99a2b',green:'#5a9367',blue:'#4a7ab0',purple:'#8a6bb0',gray:'#9a9286'};
+let hideDone = false;
+
+const SEED = [
+  {title:'Sicredi', accent:'#bf502f', tasks:[
+    {text:'Esperar Michel enviar a revisão do Produto 3.', done:false, color:'amber'},
+    {text:'Ver se Luigi avançou no Produto 4.', done:false, color:'none'},
+    {text:'Esperar resposta do Sicredi', done:false, color:'amber'},
+  ]},
+  {title:'EVALAC', accent:'#4a7ab0', tasks:[
+    {text:'Reunião na próxima semana', done:false, color:'blue'},
+  ]},
+  {title:'REDECA', accent:'#5a9367', tasks:[
+    {text:'Entrevistas BRDE', done:false, color:'none'},
+    {text:'Ver questão da aplicação futura (ser a pessoa da IA)', done:false, color:'none'},
+    {text:'Revisar materiais que Gaby mandou (05/06)', done:false, color:'red'},
+    {text:'Ver materiais do curso que a Kari enviou (09/08)', done:false, color:'none'},
+  ]},
+  {title:'BID', accent:'#8a6bb0', tasks:[
+    {text:'Falar com Lycia na próxima semana sobre reunião de Knowledge Products', done:false, color:'none'},
+  ]},
+  {title:'Guias', accent:'#d99a2b', tasks:[
+    {text:'Cobrar Luigi (ele precisa terminar 2 guias)', done:false, color:'red'},
+  ]},
+  {title:'Bens Públicos', accent:'#5a9367', tasks:[
+    {text:'Painel de Monitoramento (Indicadores)', done:false, color:'none'},
+    {text:'Guia de Sistema (o checklist)', done:false, color:'none'},
+    {text:'Clear prototypes (avançar)', done:false, color:'none'},
+  ]},
+  {title:'Cronograma', accent:'#4a7ab0', tasks:[
+    {text:'Ver se todos mandaram feedback', done:false, color:'none'},
+  ]},
+  {title:'Geral', accent:'#9a9286', tasks:[
+    {text:'Ver como Bia S foi essa semana', done:false, color:'none'},
+  ]},
+];
+
+let data = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return JSON.parse(JSON.stringify(SEED));
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(data)); flash(); }catch(e){}
+  updateStats();
+  schedulePush();
+}
+let flashT;
+function flash(){
+  const f = document.getElementById('flash');
+  f.classList.add('show'); clearTimeout(flashT);
+  flashT = setTimeout(()=>f.classList.remove('show'),900);
+}
+function uid(){return Math.random().toString(36).slice(2,9)}
+
+function updateStats(){
+  let total=0, done=0;
+  data.forEach(b=>b.tasks.forEach(t=>{total++; if(t.done)done++;}));
+  document.getElementById('stats').innerHTML =
+    `<b>${total-done}</b> pendente${total-done!==1?'s':''} · ${done} concluída${done!==1?'s':''}`;
+}
+
+function render(){
+  const board = document.getElementById('board');
+  board.innerHTML='';
+  data.forEach((block, bi)=>{
+    const el = document.createElement('div');
+    el.className='block';
+    el.dataset.bi = bi;
+    const pending = block.tasks.filter(t=>!t.done).length;
+
+    el.innerHTML = `
+      <div class="block-head">
+        <span class="block-accent" style="background:${block.accent}"></span>
+        <div class="block-title" contenteditable="true" spellcheck="false"></div>
+        <span class="count">${pending}</span>
+        <div class="block-menu">
+          <button class="icon-btn menu-toggle" title="Opções">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+          </button>
+          <div class="blockmenu-pop">
+            <div class="accent-dots">
+              ${ACCENTS.map(c=>`<span class="swatch" data-accent="${c}" style="background:${c}"></span>`).join('')}
+            </div>
+            <div class="menu-sep"></div>
+            <button data-act="up">↑ Mover para cima</button>
+            <button data-act="down">↓ Mover para baixo</button>
+            <div class="menu-sep"></div>
+            <button class="danger" data-act="del">Excluir bloco</button>
+          </div>
+        </div>
+      </div>
+      <ul class="tasks"></ul>
+      <div class="add-row">
+        <input class="add-input" placeholder="Nova atividade…">
+        <button class="add-btn" title="Adicionar">+</button>
+      </div>`;
+
+    el.querySelector('.block-title').textContent = block.title;
+
+    // title edit
+    const titleEl = el.querySelector('.block-title');
+    titleEl.addEventListener('blur',()=>{ block.title = titleEl.textContent.trim()||'Sem título'; save(); });
+    titleEl.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault(); titleEl.blur();} });
+
+    // tasks
+    const ul = el.querySelector('.tasks');
+    const visible = block.tasks.filter(t=>!(hideDone && t.done));
+    if(visible.length===0){ ul.classList.add('empty-hint'); ul.textContent = hideDone ? 'Nada pendente aqui.' : 'Sem atividades ainda.'; }
+    block.tasks.forEach((task, ti)=>{
+      if(hideDone && task.done) return;
+      ul.appendChild(taskNode(block, bi, task, ti));
+    });
+
+    // add task
+    const input = el.querySelector('.add-input');
+    const addBtn = el.querySelector('.add-btn');
+    const addTask = ()=>{
+      const v = input.value.trim(); if(!v) return;
+      block.tasks.push({text:v, done:false, color:'none'}); input.value='';
+      save(); render();
+    };
+    addBtn.addEventListener('click', addTask);
+    input.addEventListener('keydown',e=>{ if(e.key==='Enter') addTask(); });
+
+    // block menu
+    const toggle = el.querySelector('.menu-toggle');
+    const pop = el.querySelector('.blockmenu-pop');
+    toggle.addEventListener('click',e=>{ e.stopPropagation(); closeAllPops(); pop.classList.toggle('open'); });
+    pop.querySelectorAll('[data-accent]').forEach(s=>s.addEventListener('click',()=>{ block.accent=s.dataset.accent; save(); render(); }));
+    pop.querySelector('[data-act="del"]').addEventListener('click',()=>{
+      if(confirm('Excluir o bloco "'+block.title+'" e todas as atividades?')){ data.splice(bi,1); save(); render(); }
+    });
+    pop.querySelector('[data-act="up"]').addEventListener('click',()=>{ if(bi>0){ [data[bi-1],data[bi]]=[data[bi],data[bi-1]]; save(); render(); } });
+    pop.querySelector('[data-act="down"]').addEventListener('click',()=>{ if(bi<data.length-1){ [data[bi+1],data[bi]]=[data[bi],data[bi+1]]; save(); render(); } });
+
+    // drop target for tasks
+    el.addEventListener('dragover',e=>{ e.preventDefault(); el.classList.add('dragover-block'); });
+    el.addEventListener('dragleave',()=>el.classList.remove('dragover-block'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault(); el.classList.remove('dragover-block');
+      handleDrop(bi, ul, e);
+    });
+
+    board.appendChild(el);
+  });
+
+  // add-block card
+  const addCard = document.createElement('button');
+  addCard.className='add-block-card';
+  addCard.innerHTML='<span style="font-size:22px;line-height:0">+</span> Novo bloco';
+  addCard.addEventListener('click',()=>{
+    const name = prompt('Nome do novo bloco:');
+    if(name && name.trim()){
+      data.push({title:name.trim(), accent:ACCENTS[data.length%ACCENTS.length], tasks:[]});
+      save(); render();
+    }
+  });
+  board.appendChild(addCard);
+
+  updateStats();
+}
+
+function taskNode(block, bi, task, ti){
+  const li = document.createElement('li');
+  li.className='task'+(task.done?' done':'');
+  li.draggable = true;
+  li.dataset.ti = ti;
+  li.style.borderLeftColor = TAGS[task.color]||'transparent';
+  if(task.color==='none') li.style.borderLeftColor='transparent';
+
+  li.innerHTML = `
+    <input type="checkbox" class="check" ${task.done?'checked':''}>
+    <div class="task-text" contenteditable="true" spellcheck="false"></div>
+    <div class="task-actions">
+      <span class="colors">
+        <span class="color-trigger ${task.color==='none'?'is-none':''}" style="--current:${TAGS[task.color]}"></span>
+        <span class="palette">
+          ${Object.keys(TAGS).map(k=>`<span class="swatch ${k==='none'?'none':''}" data-color="${k}" style="background:${TAGS[k]}"></span>`).join('')}
+        </span>
+      </span>
+      <button class="icon-btn del-task" title="Remover">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+      </button>
+    </div>`;
+
+  li.querySelector('.task-text').textContent = task.text;
+
+  // edit text
+  const txt = li.querySelector('.task-text');
+  txt.addEventListener('blur',()=>{
+    const v = txt.textContent.trim();
+    if(!v){ block.tasks.splice(ti,1); save(); render(); return; }
+    task.text = v; save();
+  });
+  txt.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); txt.blur(); } });
+
+  // check
+  li.querySelector('.check').addEventListener('change',e=>{ task.done = e.target.checked; save(); render(); });
+
+  // delete
+  li.querySelector('.del-task').addEventListener('click',()=>{ block.tasks.splice(ti,1); save(); render(); });
+
+  // color palette
+  const trigger = li.querySelector('.color-trigger');
+  const palette = li.querySelector('.palette');
+  trigger.addEventListener('click',e=>{ e.stopPropagation(); closeAllPops(); palette.classList.toggle('open'); });
+  palette.querySelectorAll('.swatch').forEach(s=>s.addEventListener('click',()=>{ task.color=s.dataset.color; save(); render(); }));
+
+  // drag
+  li.addEventListener('dragstart',e=>{
+    li.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', JSON.stringify({bi, ti}));
+    e.dataTransfer.effectAllowed='move';
+  });
+  li.addEventListener('dragend',()=>li.classList.remove('dragging'));
+
+  return li;
+}
+
+function handleDrop(targetBi, ul, e){
+  let payload; try{ payload = JSON.parse(e.dataTransfer.getData('text/plain')); }catch(_){ return; }
+  const {bi:fromBi, ti:fromTi} = payload;
+  const moving = data[fromBi].tasks[fromTi];
+  if(!moving) return;
+
+  // figure out drop index relative to siblings
+  const after = [...ul.querySelectorAll('.task:not(.dragging)')].find(el=>{
+    const r = el.getBoundingClientRect();
+    return e.clientY < r.top + r.height/2;
+  });
+  let toTi = after ? parseInt(after.dataset.ti) : data[targetBi].tasks.length;
+
+  // remove from source
+  data[fromBi].tasks.splice(fromTi,1);
+  if(fromBi===targetBi && fromTi < toTi) toTi--;
+  data[targetBi].tasks.splice(toTi,0,moving);
+  save(); render();
+}
+
+function closeAllPops(){
+  document.querySelectorAll('.palette.open,.blockmenu-pop.open').forEach(p=>p.classList.remove('open'));
+}
+document.addEventListener('click',closeAllPops);
+
+// toolbar
+document.getElementById('hideDone').addEventListener('click',e=>{
+  hideDone=!hideDone; e.target.textContent = hideDone?'Mostrar concluídas':'Ocultar concluídas'; render();
+});
+document.getElementById('clearDone').addEventListener('click',()=>{
+  const n = data.reduce((a,b)=>a+b.tasks.filter(t=>t.done).length,0);
+  if(n===0){ alert('Nenhuma atividade concluída para limpar.'); return; }
+  if(confirm('Remover '+n+' atividade(s) concluída(s)?')){
+    data.forEach(b=>b.tasks=b.tasks.filter(t=>!t.done)); save(); render();
+  }
+});
+document.getElementById('exportBtn').addEventListener('click',()=>{
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='quadro_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+});
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ const d=JSON.parse(r.result); if(Array.isArray(d)){ data=d; save(); render(); } else alert('Arquivo inválido.'); }catch(_){ alert('Não consegui ler esse arquivo.'); } };
+  r.readAsText(file);
+});
+
+// ============ Sincronização via GitHub Gist ============
+const CFG_KEY = 'meu_quadro_sync_cfg';
+const GIST_FILE = 'quadro.json';
+let cfg = loadCfg();          // {token, gistId} | null
+let pushTimer = null;
+
+function loadCfg(){ try{ const r=localStorage.getItem(CFG_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+function persistCfg(){ try{ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }catch(e){} }
+function dropCfg(){ cfg=null; try{ localStorage.removeItem(CFG_KEY); }catch(e){} }
+
+function setSync(state, msg){
+  const pill = document.getElementById('syncPill');
+  const map = {
+    off:['Não sincronizado','var(--ink-soft)'],
+    syncing:['Sincronizando…','#d99a2b'],
+    ok:['☁ Sincronizado','#5a9367'],
+    error:['⚠ Erro de sync','#d9534f'],
+  };
+  const [label,color] = map[state]||map.off;
+  if(pill){ pill.textContent = msg||label; pill.style.color = color; }
+}
+
+function api(method, path, body){
+  return fetch('https://api.github.com'+path, {
+    method,
+    headers:{
+      'Authorization':'Bearer '+cfg.token,
+      'Accept':'application/vnd.github+json',
+      'X-GitHub-Api-Version':'2022-11-28'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+}
+
+// procura um gist já existente com o arquivo do quadro
+async function findGist(){
+  const res = await api('GET','/gists?per_page=100');
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const list = await res.json();
+  const found = list.find(g => g.files && g.files[GIST_FILE]);
+  return found ? found.id : null;
+}
+
+async function pull(silent){
+  if(!cfg || !cfg.gistId){ return; }
+  if(!silent) setSync('syncing');
+  try{
+    const res = await api('GET','/gists/'+cfg.gistId);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const gist = await res.json();
+    const file = gist.files && gist.files[GIST_FILE];
+    if(file && file.content){
+      const remote = JSON.parse(file.content);
+      if(Array.isArray(remote)){
+        data = remote;
+        try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
+        render();
+      }
+    }
+    setSync('ok');
+    refreshModal();
+  }catch(e){ setSync('error','⚠ Erro ao puxar'); refreshModal('Erro ao baixar: '+e.message); }
+}
+
+async function push(){
+  if(!cfg || !cfg.token) return;
+  setSync('syncing');
+  try{
+    const payload = { files:{ [GIST_FILE]:{ content: JSON.stringify(data,null,2) } } };
+    let res;
+    if(cfg.gistId){
+      res = await api('PATCH','/gists/'+cfg.gistId, payload);
+    } else {
+      payload.description = 'Meu Quadro — sincronização automática';
+      payload.public = false;
+      res = await api('POST','/gists', payload);
+    }
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const gist = await res.json();
+    if(!cfg.gistId){ cfg.gistId = gist.id; persistCfg(); refreshModal(); }
+    setSync('ok');
+  }catch(e){ setSync('error','⚠ Erro ao salvar'); refreshModal('Erro ao salvar: '+e.message); }
+}
+
+function schedulePush(){
+  if(!cfg) return;
+  clearTimeout(pushTimer);
+  setSync('syncing');
+  pushTimer = setTimeout(push, 1200);
+}
+
+// ---- modal ----
+const modal = document.getElementById('syncModal');
+function openModal(){
+  document.getElementById('tokenInput').value = cfg ? cfg.token : '';
+  document.getElementById('gistInput').value = (cfg && cfg.gistId) ? cfg.gistId : '';
+  refreshModal();
+  modal.classList.add('open');
+}
+function closeModal(){ modal.classList.remove('open'); }
+function refreshModal(extra){
+  const s = document.getElementById('modalStatus');
+  const gi = document.getElementById('gistInput');
+  if(cfg && cfg.gistId && gi && !gi.value) gi.value = cfg.gistId;
+  if(!s) return;
+  if(extra){ s.textContent = extra; s.style.color='var(--t-red)'; return; }
+  if(cfg && cfg.gistId){ s.textContent='Conectado ✓ — Gist '+cfg.gistId.slice(0,8)+'…'; s.style.color='var(--t-green)'; }
+  else if(cfg){ s.textContent='Token salvo, aguardando primeira sincronização.'; s.style.color='var(--ink-soft)'; }
+  else { s.textContent='Não conectado.'; s.style.color='var(--ink-soft)'; }
+}
+
+document.getElementById('syncBtn').addEventListener('click', openModal);
+document.getElementById('closeSync').addEventListener('click', closeModal);
+modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+
+document.getElementById('connectBtn').addEventListener('click', async ()=>{
+  const token = document.getElementById('tokenInput').value.trim();
+  const gistId = document.getElementById('gistInput').value.trim();
+  if(!token){ refreshModal('Cole o token primeiro.'); return; }
+  cfg = { token, gistId: gistId || '' };
+  persistCfg();
+  setSync('syncing');
+  refreshModal('Conectando…');
+  try{
+    if(!cfg.gistId){
+      const existing = await findGist();   // reaproveita um gist do quadro, se houver
+      if(existing){ cfg.gistId = existing; persistCfg(); await pull(); }
+      else { await push(); }               // cria o gist com os dados atuais
+    } else {
+      await pull();                        // já existe -> baixa o conteúdo
+    }
+    refreshModal();
+  }catch(e){ setSync('error'); refreshModal('Falhou: '+e.message); }
+});
+
+document.getElementById('pullBtn').addEventListener('click', ()=>{ if(cfg) pull(); else refreshModal('Conecte primeiro.'); });
+document.getElementById('disconnectBtn').addEventListener('click', ()=>{
+  if(confirm('Desconectar deste computador? Os dados continuam no GitHub e no cache local; só para de sincronizar aqui.')){
+    dropCfg(); setSync('off'); refreshModal();
+    document.getElementById('tokenInput').value=''; document.getElementById('gistInput').value='';
+  }
+});
+
+// estado inicial + puxa do GitHub ao abrir
+if(cfg && cfg.gistId){ setSync('ok'); pull(true); }
+else { setSync('off'); }
+
+render();
+</script>
+</body>
+</html>
